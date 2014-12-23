@@ -1,7 +1,7 @@
 Geyser
 ======
 
-Geyser is an easy to configure HTTP server based on the [Spray Frameword](http://spray.io).
+Geyser is an easy to configure HTTP server based on the [Spray Framework](http://spray.io).
 
 A minimal configuration would be
 
