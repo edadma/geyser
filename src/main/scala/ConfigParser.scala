@@ -28,13 +28,17 @@ object ConfigParser extends JavaTokenParsers
 		directory |
 		prefix |
 		content |
-		status
+		status |
+		host
 		
 	def directory = "directory" ~> string ^^
 		(DirectoryRouteConfig( _ ))
 
 	def prefix = "prefix" ~> string ~ routes <~ "." ^^
 		{case p ~ r => PathPrefixRouteConfig( p, r )}
+
+	def host = "host" ~> string ~ routes <~ "." ^^
+		{case h ~ r => HostRouteConfig( h, r )}
 	
 	def status = "status" ~> "[1-9][0-9][1-9]".r ~ routes <~ "." ^^
 		{case s ~ r => ResponseCodeRouteConfig( s.toInt, r )}

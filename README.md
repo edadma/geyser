@@ -23,13 +23,14 @@ Here is a bit more involved example
 		port = 8080
 		timeout = 5
 		
-		prefix "maven2"
-			directory "/var/www/example.com/maven2".
-		
-		prefix "releases"
-			directory "/var/www/example.com/releases".
-		
-		directory "/var/www/example.com/html"
+		host "example.com"
+			prefix "maven2"
+				directory "/var/www/example.com/maven2".
+			
+			prefix "releases"
+				directory "/var/www/example.com/releases".
+			
+			directory "/var/www/example.com/html".
 
 		status 404
 			<html>
