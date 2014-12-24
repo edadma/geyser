@@ -8,8 +8,7 @@ import MediaTypes._
 
 class Service( args: Any* ) extends Actor with HttpService
 {
-	val config = args(0).asInstanceOf[List[HostRouteConfig]]
-	private var route: RequestContext ⇒ Unit = null
+	val route = build( args(0).asInstanceOf[List[HostRouteConfig]] )
 	
 	def build( l: List[RouteConfig] ): RequestContext ⇒ Unit =
 		l match
@@ -50,23 +49,6 @@ class Service( args: Any* ) extends Actor with HttpService
 				}
 		}
 		
-	route = build( config )
-	
-	route ~=
-		respondWithStatus( StatusCodes.NotFound ) {
-			respondWithMediaType(`text/html`) {
-				complete {
-					<html>
-						<body>
-							<h1>Page Not Found</h1>
-							<hr/>
-							<p>We couldn't find the page you requested.</p>
-						</body>
-					</html>
-				}
-			}
-		}
-	
 	def actorRefFactory = context
 
 	def receive = runRoute( route )

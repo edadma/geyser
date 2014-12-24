@@ -1,6 +1,0 @@
-http
-	interface = "localhost"
-	port = 8080
-	timeout = 5
-	
-	directory "/var/www/example.com"
