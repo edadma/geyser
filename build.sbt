@@ -16,22 +16,21 @@ libraryDependencies ++= Seq(
 	)
 
 libraryDependencies ++= Seq(
-	"org.scala-lang.modules" %% "scala-parser-combinators" % "1.0.3",
-	"org.scala-lang.modules" %% "scala-async"              % "0.9.2"
+	"org.scala-lang.modules" %% "scala-parser-combinators" % "1.0.3"
 	)
 
 libraryDependencies ++= {
-  val akkaV = "2.3.8"
-  val sprayV = "1.3.2"
-  Seq(
-    "io.spray"            %%  "spray-can"     % sprayV,
-    "io.spray"            %%  "spray-routing" % sprayV,
-	"io.spray"            %%  "spray-json"    % "1.3.1",
-    "io.spray"            %%  "spray-testkit" % sprayV  % "test",
-    "com.typesafe.akka"   %%  "akka-actor"    % akkaV,
-    "com.typesafe.akka"   %%  "akka-testkit"  % akkaV   % "test",
-    "org.specs2"          %%  "specs2-core"   % "2.3.11" % "test"
-  )
+	val akkaV = "2.3.8"
+	val sprayV = "1.3.2"
+	Seq(
+		"io.spray"            %%  "spray-can"     % sprayV,
+		"io.spray"            %%  "spray-routing" % sprayV,
+		"io.spray"            %%  "spray-json"    % "1.3.1",
+		"io.spray"            %%  "spray-testkit" % sprayV  % "test",
+		"com.typesafe.akka"   %%  "akka-actor"    % akkaV,
+		"com.typesafe.akka"   %%  "akka-testkit"  % akkaV   % "test",
+		"org.specs2"          %%  "specs2-core"   % "2.3.11" % "test"
+	)
 }
 
 libraryDependencies ++= Seq(
@@ -43,8 +42,8 @@ libraryDependencies ++= Seq(
 
 libraryDependencies ++= Seq(
 	"org.webjars" % "bootstrap" % "3.3.1",
-//	"org.webjars" % "angularjs" % "1.3.4-1"
-	"org.webjars" % "backbonejs" % "1.1.2-2"
+	"org.webjars" % "angularjs" % "1.3.8"
+//	"org.webjars" % "backbonejs" % "1.1.2-2"
 	)
 
 //mainClass in assembly := Some( "ca.hyperreal.PACKAGE.Boot" )

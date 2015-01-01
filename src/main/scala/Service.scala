@@ -26,8 +26,13 @@ class Service( args: Any* ) extends Actor with HttpService
 				{
 					build( routes )
 				}
-			case PathPrefixRouteConfig( prefix, routes ) =>
+			case PrefixRouteConfig( prefix, routes ) =>
 				pathPrefix( prefix )
+				{
+					build( routes )
+				}
+			case PathRouteConfig( p, routes ) =>
+				path( p )
 				{
 					build( routes )
 				}

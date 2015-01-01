@@ -13,7 +13,8 @@ case class HttpConfig( interface: String, port: Int, timeout: Timeout, routes: L
 
 trait RouteConfig extends Config
 case class HostRouteConfig( host: String, routes: List[RouteConfig] ) extends RouteConfig
-case class PathPrefixRouteConfig( prefix: String, routes: List[RouteConfig] ) extends RouteConfig
+case class PrefixRouteConfig( prefix: String, routes: List[RouteConfig] ) extends RouteConfig
+case class PathRouteConfig( path: String, routes: List[RouteConfig] ) extends RouteConfig
 case class ResponseCodeRouteConfig( code: Int, routes: List[RouteConfig] ) extends RouteConfig
 case class DirectoryRouteConfig( directory: String ) extends RouteConfig
 case class ContentRouteConfig( content: xml.Node ) extends RouteConfig
