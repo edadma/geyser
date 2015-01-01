@@ -53,10 +53,10 @@ object ConfigParser extends JavaTokenParsers
 	def tag_name = "[:_A-Za-z][:_A-Za-z0-9.-]*"r
 	
 	def xml_string: Parser[String] =
-		"<" ~ tag_name ~ "/>".r ^^ {case o ~ n ~ c => o + n + c} |	// should be [^/]*/> for closing regex
-		"<" ~ tag_name ~ "[^>]*>[^<]*".r ~ rep(xml_string) ~ "[^<]*</".r ~ tag_name ~ " ?>".r ^^
-			{case os ~ s ~ cs ~ el ~ oe ~ e ~ ce => os + s + cs + el.mkString + oe + e + ce} |
-		"""<!--(?:.|\n)*-->""".r
+        "<" ~ tag_name ~ """.*?/ ?>[ \t]*""".r ^^ {case o ~ n ~ c => o + n + c} |    // should be [^/]*/> for closing regex
+        "<" ~ tag_name ~ """[^>\n]*>[^<]*""".r ~ rep(xml_string ~ "[^<]*".r ^^ {case a ~ b => a + b}) ~ """</""".r ~ tag_name ~ """ ?>[ \t]*""".r ^^
+            {case os ~ s ~ cs ~ el ~ oe ~ e ~ ce => os + s + cs + el.mkString + oe + e + ce} |
+		"""<!--(?:.|\n)*?-->[ \t]*""".r
 
 	def xml = xml_string ^^
 		{s =>
