@@ -36,6 +36,8 @@ class Service( args: Any* ) extends Actor with HttpService
 				{
 					build( routes )
 				}
+			case FileRouteConfig( file ) =>
+				getFromFile( file )
 			case DirectoryRouteConfig( directory ) =>
 				unmatchedPath
 				{ d =>

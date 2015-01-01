@@ -32,6 +32,9 @@ object ConfigParser extends JavaTokenParsers
 		status |
 		host
 		
+	def file = "file" ~> string ^^
+		(FileRouteConfig( _ ))
+		
 	def directory = "directory" ~> string ^^
 		(DirectoryRouteConfig( _ ))
 
