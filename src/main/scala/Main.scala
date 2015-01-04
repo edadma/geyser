@@ -1,5 +1,7 @@
 package ca.hyperreal.geyser
 
+import scala.sys.process._
+
 import ca.hyperreal.options._
 import spray.can.Http
 import akka.actor.{Actor, ActorSystem, Props}
@@ -14,7 +16,17 @@ object Main extends App
 {
 	implicit val system = ActorSystem( "geyser" )
 
-	val options = new Options( List(), List("-c"), List(), "-c" -> "/etc/geyser/config" )
+	val cygwin =
+		try
+		{
+			"uname".!! startsWith "CYGWIN"
+		}
+		catch
+		{
+			case e: Exception => false
+		}
+		
+	val options = new Options( List(), List("-c"), List(), "-c" -> ((if (cygwin) "c:/cygwin64" else "") + "/etc/geyser/config") )
 
 	options parse args
 	
