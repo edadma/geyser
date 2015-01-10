@@ -9,39 +9,30 @@ Configuration
 A minimal configuration would be
 
 	http
-	  interface = "example.com"
-	  port = 8080
+	  interface example.com
+	  port      8080
 
-	  directory "/var/www/example.com".
+	  directory /var/www/example.com
 
 which would start a server listening on port 8080 serving web pages in directory `/var/www/example.com` for domain `example.com`.
 
 Here is a bit more involved example
 
 	http
-		interface = "example.com"
-		port = 8080
-		timeout = 5
+		interface example.com
+		port      8080
+		timeout   5
 		
-		host "example.com"
+		host example.com
 			prefix "maven2"
-				directory "/var/www/example.com/maven2".
+				directory /var/www/example.com/maven2
 			
 			prefix "releases"
-				directory "/var/www/example.com/releases".
+				directory /var/www/example.com/releases
 			
-			directory "/var/www/example.com/html".
+			directory /var/www/example.com/html
 
 		status 404
-			<html>
-				<head>
-					<title>404 Page Not Found</title>
-				</head>
-				<body>
-					<h1>Page Not Found</h1>
-					<hr/>
-					<p>We couldn't find the page you requested.</p>
-				</body>
-			</html>.
+			file /var/www/example.com/404.html
 
 By default, configuration is in `/etc/geyser/config`, but can be overridden with the `-c` command line option.

@@ -38,11 +38,21 @@ object Main extends App
 	val c =
 """
 http
-	interface = "asdf.com"
-	port = 8080
-	
-	prefix "asdf"
-		directory "/home/ed/projects/geyser"
+	interface example.com
+	port      80
+	timeout   5
+		
+	host example.com
+		prefix "maven2"
+			directory /var/www/example.com/maven2
+		
+		prefix "releases"
+			directory /var/www/example.com/releases
+		
+		directory /var/www/example.com/html
+
+		status 404
+			file /var/www/example.com/404.html
 """
 
 	val config = ConfigParser.parse( new CharSequenceReader(c) )
