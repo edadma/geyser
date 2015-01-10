@@ -32,7 +32,7 @@ Here is a bit more involved example
 			
 			directory /var/www/example.com/html
 
-		status 404
-			file /var/www/example.com/404.html
+			status 404
+				file /var/www/example.com/404.html
 
 By default, configuration is in `/etc/geyser/config`, but can be overridden with the `-c` command line option.

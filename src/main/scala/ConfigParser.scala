@@ -32,12 +32,34 @@ object ConfigParser extends StandardTokenParsers with PackratParsers
 						case None ~ f ~ _ ~ r => StringLit(f + "/" + r.mkString("/"))
 						case _ ~ f ~ _ ~ r => StringLit("/" + f + "/" + r.mkString("/"))
 					}
+					
+// 			def tag_name = "[:_A-Za-z][:_A-Za-z0-9.-]*"r
+// 			
+// 			def xml_string: Parser[String] =
+// 				"<" ~ tag_name ~ """.*?/ ?>[ \t]*""".r ^^ {case o ~ n ~ c => o + n + c} |
+// 				"<" ~ tag_name ~ """[^>\n]*>[^<]*""".r ~ rep(xml_string ~ "[^<]*".r ^^ {case a ~ b => a + b}) ~ """</""".r ~ tag_name ~ """ ?>[ \t]*""".r ^^
+// 					{case os ~ s ~ cs ~ el ~ oe ~ e ~ ce => os + s + cs + el.mkString + oe + e + ce} |
+// 				"""<!--(?:.|\n)*?-->[ \t]*""".r
+// 
+// 			def xml = xml_string ^^
+// 				{s =>
+// 					if (s startsWith "<!--")
+// 						Text( "" )
+// 					else
+// 						Try( XML.loadString(s) ).getOrElse( Text(s) )
+// 				}
 			
-			reserved += ("http", "interface", "port", "timeout", "file", "directory", "prefix", "path", "host", "status")
+			reserved += ("http", "application", "interface", "port", "timeout", "file", "directory", "prefix", "path", "host", "status")
 //			delimiters += ()
 		}
 
-	def parse( r: Reader[Char] ) = phrase( config )( lexical.read(r) )
+	def parse( r: Reader[Char] ) =
+		phrase( config )( lexical.read(r) ) match
+		{
+			case Success( result, _ ) => result
+			case Failure( msg, rest ) => sys.error( msg + " at " + rest.pos + "\n" + rest.pos.longString )
+			case Error( msg, _ ) => sys.error( msg )
+		}
 
 	import lexical.{Newline, Indent, Dedent}
 
@@ -65,7 +87,8 @@ object ConfigParser extends StandardTokenParsers with PackratParsers
 			prefix |
 			path |
 			status |
-			host
+			host |
+			application
 		) <~ onl
 		
 	lazy val file = "file" ~> stringLit ^^
@@ -85,4 +108,7 @@ object ConfigParser extends StandardTokenParsers with PackratParsers
 	
 	lazy val status = "status" ~> numericLit ~ routes ^^
 		{case s ~ r => ResponseCodeRouteConfig( s.toInt, r )}
+		
+	lazy val application = "application" ~> stringLit ^^
+		(ApplicationRouteConfig( _ ))
 }

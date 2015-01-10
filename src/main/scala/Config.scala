@@ -19,3 +19,4 @@ case class ResponseCodeRouteConfig( code: Int, routes: List[RouteConfig] ) exten
 case class FileRouteConfig( file: String ) extends RouteConfig
 case class DirectoryRouteConfig( directory: String ) extends RouteConfig
 case class ContentRouteConfig( content: xml.Node ) extends RouteConfig
+case class ApplicationRouteConfig( file: String ) extends RouteConfig
