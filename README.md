@@ -12,7 +12,7 @@ A minimal configuration would be
 	  interface = "example.com"
 	  port = 8080
 
-	  directory "/var/www/example.com"
+	  directory "/var/www/example.com".
 
 which would start a server listening on port 8080 serving web pages in directory `/var/www/example.com` for domain `example.com`.
 
@@ -44,4 +44,4 @@ Here is a bit more involved example
 				</body>
 			</html>.
 
-By default, configuration is in `\etc\geyser\config`, but can be overridden with the `-c` command line option.
+By default, configuration is in `/etc/geyser/config`, but can be overridden with the `-c` command line option.
