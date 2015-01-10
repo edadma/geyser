@@ -2,7 +2,8 @@ package ca.hyperreal.geyser
 
 import scala.sys.process._
 
-import ca.hyperreal.options._
+import scala.util.parsing.input.CharSequenceReader
+
 import spray.can.Http
 import akka.actor.{Actor, ActorSystem, Props}
 import akka.io.IO
@@ -11,10 +12,12 @@ import akka.util.Timeout
 import scala.concurrent.duration._
 import spray.routing.HttpService
 
+import ca.hyperreal.options._
+
 
 object Main extends App
 {
-	implicit val system = ActorSystem( "geyser" )
+//	implicit val system = ActorSystem( "geyser" )
 
 	val cygwin =
 		try
@@ -30,34 +33,47 @@ object Main extends App
 
 	options parse args
 	
-	val config = ConfigParser( io.Source.fromFile(options("-c")).mkString )
-	
-	build( config )
-	
-	def build( c: Config )
-	{
-		c match
-		{
-			case ServerConfig( listeners ) => build( listeners )
-		}
-	}
+// 	val config = ConfigParser( io.Source.fromFile(options("-c")).mkString )
 
-	def build( cs: List[Config] )
-	{
-		cs foreach(
-			_ match
-			{
-				case HttpConfig( interface, port, timeout, routes ) => listener( interface, port, timeout, routes )
-			} )
-	}
+	val c =
+"""
+http
+	interface = "asdf.com"
+	port = 8080
 	
-	def listener( interface: String, port: Int, timeout: Timeout, args: Any* )
-	{
-	val serviceActor = system.actorOf( Props(classOf[Service], args), interface )
-	implicit val t = timeout
+	prefix "asdf"
+		directory "/home/ed/projects/geyser"
+"""
+
+	val config = ConfigParser.parse( new CharSequenceReader(c) )
+
+	println( config )
+//	build( config )
 	
-		IO( Http ) ? Http.Bind( serviceActor, interface, port )
-	}
+// 	def build( c: Config )
+// 	{
+// 		c match
+// 		{
+// 			case ServerConfig( listeners ) => build( listeners )
+// 		}
+// 	}
+// 
+// 	def build( cs: List[Config] )
+// 	{
+// 		cs foreach(
+// 			_ match
+// 			{
+// 				case HttpConfig( interface, port, timeout, routes ) => listener( interface, port, timeout, routes )
+// 			} )
+// 	}
+// 	
+// 	def listener( interface: String, port: Int, timeout: Timeout, args: Any* )
+// 	{
+// 	val serviceActor = system.actorOf( Props(classOf[Service], args), interface )
+// 	implicit val t = timeout
+// 	
+// 		IO( Http ) ? Http.Bind( serviceActor, interface, port )
+// 	}
 }
 // 		ServerConfig( List(
 // 			HttpConfig( "localhost", 8080, Timeout(5.seconds), List(

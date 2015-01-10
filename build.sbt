@@ -1,6 +1,6 @@
 name          := "geyser"
 
-version       := "0.1"
+version       := "0.2"
 
 organization  := "ca.hyperreal"
 
@@ -12,7 +12,8 @@ resolvers += "Hyperreal Repository" at "http://hyperreal.ca/maven2"
 
 libraryDependencies ++= Seq(
 	"ca.hyperreal" %% "__markdown__" % "0.2",
-	"ca.hyperreal" %% "options"      % "0.1"
+	"ca.hyperreal" %% "options"      % "0.1",
+	"org.funl-lang" %% "indentation-lexical" % "0.3"
 	)
 
 libraryDependencies ++= Seq(

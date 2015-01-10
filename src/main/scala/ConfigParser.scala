@@ -1,20 +1,37 @@
 package ca.hyperreal.geyser
 
-import util.parsing.combinator._
-import util.matching.Regex
-import xml.{Elem, Node, Text, Group, XML, Utility}
-import collection.mutable.{Buffer, ListBuffer, HashMap}
-import scala.util.Try
-import akka.util.Timeout
+import scala.util.parsing.combinator.PackratParsers
+import scala.util.parsing.combinator.syntactical.StandardTokenParsers
+import util.parsing.combinator.lexical.StdLexical
+import util.parsing.input.Reader
 import scala.concurrent.duration._
 
+import akka.util.Timeout
 
-object ConfigParser extends JavaTokenParsers
+import funl.indentation.IndentationLexical
+
+
+object ConfigParser extends StandardTokenParsers with PackratParsers
 {
-	def config = rep1(http) ^^
+	override val lexical: IndentationLexical =
+		new IndentationLexical( false, true, List(), List() )
+		{
+	//		override def token: Parser[Token] = super.token
+
+			reserved += ("http", "interface", "port", "timeout", "file", "directory", "prefix", "path", "host", "status")
+			delimiters += ("=")
+		}
+
+	def parse( r: Reader[Char] ) = phrase( config )( lexical.read(r) )
+
+	import lexical.{Newline, Indent, Dedent}
+
+	lazy val onl = opt(Newline)
+
+	lazy val config = rep1(http) ^^
 		(ServerConfig( _ ))
 
-	def http = "http" ~> opt("interface" ~> "=" ~> string) ~ opt("port" ~> "=" ~> wholeNumber) ~ opt("timeout" ~> "=" ~> wholeNumber) ~ routes <~ opt(".") ^^
+	lazy val http = "http" ~> Indent ~> opt("interface" ~> "=" ~> stringLit <~ onl) ~ opt("port" ~> "=" ~> numericLit <~ onl) ~ opt("timeout" ~> "=" ~> numericLit <~ onl) ~ rep1(route) <~ Dedent <~ onl ^^
 		{case i ~ p ~ t ~ r =>
 			val port = p.map( _.toInt ).getOrElse( 80 )
 			require( port > 0 && port < 49151, "port number out of range: " + port )
@@ -22,67 +39,23 @@ object ConfigParser extends JavaTokenParsers
 			HttpConfig( i.getOrElse("localhost"), port, Timeout(t.map(_.toInt).getOrElse(5).seconds), r )
 		}
 	
-	def routes: Parser[List[RouteConfig]] = rep(route)
+	lazy val routes: PackratParser[List[RouteConfig]] =
+		repN(1, route) |
+		Indent ~> rep1(route) <~ Dedent
 	
-	def route =
-		directory |
-		prefix |
-		path |
-		content |
-		status |
-		host
+	lazy val route =
+		(
+			file |
+			directory |
+			prefix
+		) <~ onl
 		
-	def file = "file" ~> string ^^
+	lazy val file = "file" ~> stringLit ^^
 		(FileRouteConfig( _ ))
-		
-	def directory = "directory" ~> string ^^
+
+	lazy val directory = "directory" ~> stringLit ^^
 		(DirectoryRouteConfig( _ ))
 
-	def prefix = "prefix" ~> string ~ routes <~ "." ^^
+	lazy val prefix = "prefix" ~> stringLit ~ routes ^^
 		{case p ~ r => PrefixRouteConfig( p, r )}
-
-	def path = "path" ~> string ~ routes <~ "." ^^
-		{case p ~ r => PathRouteConfig( p, r )}
-
-	def host = "host" ~> string ~ routes <~ "." ^^
-		{case h ~ r => HostRouteConfig( h, r )}
-	
-	def status = "status" ~> "[1-9][0-9][1-9]".r ~ routes <~ "." ^^
-		{case s ~ r => ResponseCodeRouteConfig( s.toInt, r )}
-		
-	def content = xml ^^
-		(ContentRouteConfig( _ ))
-		
-	def tag_name = "[:_A-Za-z][:_A-Za-z0-9.-]*"r
-	
-	def xml_string: Parser[String] =
-        "<" ~ tag_name ~ """.*?/ ?>[ \t]*""".r ^^ {case o ~ n ~ c => o + n + c} |    // should be [^/]*/> for closing regex
-        "<" ~ tag_name ~ """[^>\n]*>[^<]*""".r ~ rep(xml_string ~ "[^<]*".r ^^ {case a ~ b => a + b}) ~ """</""".r ~ tag_name ~ """ ?>[ \t]*""".r ^^
-            {case os ~ s ~ cs ~ el ~ oe ~ e ~ ce => os + s + cs + el.mkString + oe + e + ce} |
-		"""<!--(?:.|\n)*?-->[ \t]*""".r
-
-	def xml = xml_string ^^
-		{s =>
-			if (s startsWith "<!--")
-				Text( "" )
-			else
-				Try( XML.loadString(s) ).getOrElse( Text(s) )
-		}
-	
-	def string = stringLiteral ^^ {s => s.substring( 1, s.length - 1 )}
-	
-	protected def parseRule( rule: Parser[Config], s: String ) =
-	{
-		parseAll( rule, s ) match
-		{
-			case Success( result, _ ) => result
-			case Failure( msg, rest ) => sys.error( msg + " at " + rest.pos + "\n" + rest.pos.longString )
-			case Error( msg, _ ) => sys.error( msg )
-		}
-	}
-	
-	def apply( s: String ) =
-	{
-		parseRule( config, s )
-	}
 }
