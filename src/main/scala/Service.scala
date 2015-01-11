@@ -1,6 +1,8 @@
 package ca.hyperreal.geyser
 
-import akka.actor.Actor
+import java.net._
+
+import akka.actor.{Props, Actor, ExtendedActorSystem}
 import spray.routing._
 import spray.http._
 import MediaTypes._
@@ -8,6 +10,8 @@ import MediaTypes._
 
 class Service( args: Any* ) extends Actor with HttpService
 {
+	val CLASS = """(.+)\.([^.]+)"""r
+	
 	val route = build( args(0).asInstanceOf[List[HostRouteConfig]] )
 	
 	def build( l: List[RouteConfig] ): RequestContext ⇒ Unit =
@@ -54,6 +58,12 @@ class Service( args: Any* ) extends Actor with HttpService
 				{
 					build( routes )
 				}
+			case ApplicationRouteConfig( jar, route ) =>
+				val cl = new URLClassLoader( Array(new URL("file:" + jar)), context.system.asInstanceOf[ExtendedActorSystem].dynamicAccess.classLoader )
+				val clazz = cl.loadClass( route )
+				val actor = context.actorOf( Props(clazz), route )
+				
+				ctx => actor.forward( ctx )
 		}
 		
 	def actorRefFactory = context

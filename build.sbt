@@ -11,7 +11,7 @@ scalacOptions := Seq("-unchecked", "-deprecation", "-encoding", "utf8")
 resolvers += "Hyperreal Repository" at "http://hyperreal.ca/maven2"
 
 libraryDependencies ++= Seq(
-	"ca.hyperreal" %% "__markdown__" % "0.2",
+//	"ca.hyperreal" %% "__markdown__" % "0.2",
 	"ca.hyperreal" %% "options"      % "0.1",
 	"org.funl-lang" %% "indentation-lexical" % "0.3"
 	)

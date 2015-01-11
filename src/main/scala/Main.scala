@@ -2,12 +2,10 @@ package ca.hyperreal.geyser
 
 import scala.sys.process._
 
-//import scala.util.parsing.input.CharSequenceReader
-import scala.collection.immutable.PagedSeq
-import scala.util.parsing.input.PagedSeqReader
+import scala.util.parsing.input.CharSequenceReader
 
 import spray.can.Http
-import akka.actor.{Actor, ActorSystem, Props}
+import akka.actor.{Actor, ActorSystem, Props, ExtendedActorSystem}
 import akka.io.IO
 import akka.pattern.ask
 import akka.util.Timeout
@@ -31,39 +29,12 @@ object Main extends App
 			case e: Exception => false
 		}
 		
-// 	val options = new Options( List(), List("-c"), List(), "-c" -> ((if (cygwin) "c:/cygwin64" else "") + "/etc/geyser/config") )
-	val options = new Options( List(), List("-c"), List(), "-c" -> ("/home/ed/projects/geyser/config") )
+ 	val options = new Options( List(), List("-c"), List(), "-c" -> ((if (cygwin) "c:/cygwin64" else "") + "/etc/geyser/config") )
+//	val options = new Options( List(), List("-c"), List(), "-c" -> ("/home/ed/projects/geyser/config") )
 
 	options parse args
 	
- 	val config = ConfigParser.parse( new PagedSeqReader(PagedSeq.fromFile(options("-c"))) )
-
-// 	val c =
-// """
-// http
-// 	interface example.com
-// 	port      80
-// 	timeout   5
-// 		
-// 	host asdf.com
-// 		application /var/www/asdf.com/app.jar
-// 	
-// 	host example.com
-// 		prefix "maven2"
-// 			directory /var/www/example.com/maven2
-// 		
-// 		prefix "releases"
-// 			directory /var/www/example.com/releases
-// 		
-// 		directory /var/www/example.com/html
-// 
-// 		status 404
-// 			file /var/www/example.com/404.html
-// """
-// 
-// 	val config = ConfigParser.parse( new CharSequenceReader(c) )
-
-//	println( config )
+ 	val config = ConfigParser.parse( new CharSequenceReader(io.Source.fromFile(options("-c")).mkString) )
 
 	build( config )
 	

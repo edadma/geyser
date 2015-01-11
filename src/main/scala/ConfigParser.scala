@@ -18,13 +18,13 @@ object ConfigParser extends StandardTokenParsers with PackratParsers
 		{
 			override def token: Parser[Token] = domain | path | super.token
 
-			def domain_part = rep1(letter | digit) ^^ (_.mkString)
+			def domain_part = rep1(letter | digit | '-') ^^ (_.mkString)
 
 			def domain =
 				domain_part ~ '.' ~ rep1sep(domain_part, '.') ^^
 					{case d ~ _ ~ l => StringLit(d + "." + l.mkString("."))}
 
-			def path_part = rep1(letter | digit | '.') ^^ (_.mkString)
+			def path_part = rep1(letter | digit | '-' | '.') ^^ (_.mkString)
 
 			def path =
 				opt('/') ~ path_part ~ '/' ~ rep1sep(path_part, '/') ^^
@@ -109,6 +109,6 @@ object ConfigParser extends StandardTokenParsers with PackratParsers
 	lazy val status = "status" ~> numericLit ~ routes ^^
 		{case s ~ r => ResponseCodeRouteConfig( s.toInt, r )}
 		
-	lazy val application = "application" ~> stringLit ^^
-		(ApplicationRouteConfig( _ ))
+	lazy val application = "application" ~> stringLit ~ stringLit ^^
+		{case j ~ m => ApplicationRouteConfig( j, m )}
 }
