@@ -20,7 +20,7 @@ Here is a more involved example
 
 	http
 		interface example.com
-		port      8080
+		port      80
 		timeout   5
 			
 		host example.com
