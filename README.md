@@ -39,4 +39,4 @@ In the above example, there is a Maven repository (`http://example.com/maven2/..
 
 By default, configuration is in `/etc/geyser/config`, but can be overridden with the `-c` command line option.
 
-The executable can be downloaded from [http://hyperreal.ca/releases/geyser-0.2.jar].
+The executable can be downloaded from [https://bintray.com/artifact/download/edadma/generic/geyser-0.2.jar].
