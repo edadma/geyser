@@ -8,7 +8,7 @@ import scala.concurrent.duration._
 
 import akka.util.Timeout
 
-import funl.indentation.IndentationLexical
+import ca.hyperreal.indentation.IndentationLexical
 
 
 object ConfigParser extends StandardTokenParsers with PackratParsers

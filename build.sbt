@@ -4,16 +4,16 @@ version       := "0.2"
 
 organization  := "ca.hyperreal"
 
-scalaVersion  := "2.11.4"
+scalaVersion  := "2.11.6"
 
 scalacOptions := Seq("-unchecked", "-deprecation", "-encoding", "utf8")
 
-resolvers += "Hyperreal Repository" at "http://hyperreal.ca/maven2"
+resolvers += "Hyperreal Repository" at "https://dl.bintray.com/edadma/maven"
 
 libraryDependencies ++= Seq(
 //	"ca.hyperreal" %% "__markdown__" % "0.2",
 	"ca.hyperreal" %% "options"      % "0.1",
-	"org.funl-lang" %% "indentation-lexical" % "0.3"
+	"ca.hyperreal" %% "indentation-lexical" % "0.3"
 	)
 
 libraryDependencies ++= Seq(
@@ -36,7 +36,7 @@ libraryDependencies ++= {
 
 libraryDependencies ++= Seq(
 //	"com.github.mauricio" %% "postgresql-async" % "0.2.15",
-	"org.mongodb" %% "casbah" % "2.7.4",
+//	"org.mongodb" %% "casbah" % "2.7.4",
 	"org.slf4j" % "slf4j-api" % "1.7.7",
 	"org.slf4j" % "slf4j-simple" % "1.7.7"
 	)
@@ -69,9 +69,11 @@ seq(coffeeSettings: _*)
 
 (CoffeeKeys.bare in (Compile, CoffeeKeys.coffee)) := true
 
+seq(bintraySettings:_*)
+
 publishMavenStyle := true
 
-publishTo := Some( Resolver.sftp( "private", "hyperreal.ca", "/var/www/hyperreal.ca/maven2" ) )
+//publishTo := Some( Resolver.sftp( "private", "hyperreal.ca", "/var/www/hyperreal.ca/maven2" ) )
 
 publishArtifact in Test := false
 
